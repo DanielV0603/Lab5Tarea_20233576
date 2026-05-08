@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar.html :: header( title = 'Clientes')}"></head>
+<body class="container mt-4">
+<div th:replace="~{fragments/navbar.html :: navbar('clientes')}"></div>
+<h2 th:text="${cliente.id == null ? 'Registro Cliente' : 'Editar Cliente'}">Registro Cliente</h2>
+
+<form th:action="@{/guardarCliente}" th:object="${cliente}" method="post" class="mt-4">
+
+    <input type="hidden" th:field="*{id}">
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input type="text" class="form-control" th:field="*{nombre}"
+               th:classappend="${#fields.hasErrors('nombre')} ? 'is-invalid' : ''">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Documento</label>
+        <input type="text" class="form-control" th:field="*{documento}"
+               th:classappend="${#fields.hasErrors('documento')} ? 'is-invalid' : ''">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('documento')}" th:errors="*{documento}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo documento</label>
+        <input type="text" class="form-control" th:field="*{documentoTipo}"
+               th:classappend="${#fields.hasErrors('documentoTipo')} ? 'is-invalid' : ''">
+        <div class="invalid-feedback" th:if="${#fields.hasErrors('documentoTipo')}" th:errors="*{documentoTipo}"></div>
+    </div>
+
+    <div class="mt-4">
+        <button type="submit" class="btn btn-primary" th:text="${cliente.id == null ? 'Registrar' : 'Guardar Cambios'}"></button>
+        <a th:href="@{/}" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+</body>
+</html>
