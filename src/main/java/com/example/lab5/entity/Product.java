@@ -26,7 +26,7 @@ public class Product {
     private Double precio;
 
     @NotNull(message = "El stock es obligatorio")
-    @Min(value = 0)
+    @Min(value = 0, message = "Valor de stick mínimo: 0")
     @Column(nullable = false)
     private Integer stock;
 }
