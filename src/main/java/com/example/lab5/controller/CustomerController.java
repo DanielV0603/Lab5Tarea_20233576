@@ -99,6 +99,7 @@ public class CustomerController {
         attr.addFlashAttribute("msg", "cliente borrado exitosamente");
         return "redirect:/";
     }
+    //Producto
     @GetMapping({"/productos"})
     public String listarProductos(Model model){
         model.addAttribute("listaProductos",productoRepository.findAll());
@@ -111,6 +112,14 @@ public class CustomerController {
     @PostMapping("/guardarProducto")
     public String guardarProducto(@ModelAttribute("producto") @Valid Product producto, BindingResult bindingResult, RedirectAttributes attr) {
 
+        if (!bindingResult.hasFieldErrors("nombre")) {
+            Optional<Product> prodExistente = productoRepository.findByNombre(producto.getNombre());
+
+            if (prodExistente.isPresent() && !prodExistente.get().getId().equals(producto.getId())) {
+                bindingResult.rejectValue("nombre", "error.nombre", "Este nombre de producto ya está registrado");
+            }
+        }
+
         if (bindingResult.hasErrors()) {
             return "crearProducto";
         }
@@ -120,16 +129,29 @@ public class CustomerController {
             attr.addFlashAttribute("msg", "producto actualizado exitosamente");
         }
         productoRepository.save(producto);
-        return "redirect:/";
+        return "redirect:/productos";
+    }
+    @GetMapping("/editarProducto")
+    public String editarProducto(@ModelAttribute("producto") Product producto,
+                                 @RequestParam("id") Integer id,
+                                 Model model) {
+        Optional<Product> optProducto = productoRepository.findById(id);
+
+        if (optProducto.isPresent()) {
+            producto = optProducto.get();
+            model.addAttribute("producto", producto);
+            return "crearProducto";
+        }
+        return "redirect:/productos";
     }
     @GetMapping("/eliminarProducto")
     public String borrarProducto(@RequestParam("id") int id, RedirectAttributes attr) {
-        Optional<Customer> optional = customerRepository.findById(id);
+        Optional<Product> optional = productoRepository.findById(id);
 
         if (optional.isPresent()) {
             productoRepository.deleteById(id);
         }
         attr.addFlashAttribute("msg", "producto borrado exitosamente");
-        return "redirect:/";
+        return "redirect:/productos";
     }
 }

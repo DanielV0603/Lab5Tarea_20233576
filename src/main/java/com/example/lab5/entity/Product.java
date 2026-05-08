@@ -1,8 +1,7 @@
 package com.example.lab5.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,11 +20,13 @@ public class Product {
     @Column(name = "name",nullable = false, length = 100, unique = true)
     private String nombre;
 
-    @NotBlank(message = "El precio no puede estar vacío")
+    @NotNull(message = "El precio es obligatorio")
+    @Positive(message = "El precio debe ser mayor a 0")
     @Column(name = "price",nullable = false)
-    private double precio;
+    private Double precio;
 
-    @NotBlank(message = "El stock no puede estar vacío")
+    @NotNull(message = "El stock es obligatorio")
+    @Min(value = 0)
     @Column(nullable = false)
-    private int stock;
+    private Integer stock;
 }

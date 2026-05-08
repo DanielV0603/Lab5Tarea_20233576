@@ -18,14 +18,14 @@
 
     <div class="mb-3">
         <label class="form-label">Precio</label>
-        <input type="text" class="form-control" th:field="*{precio}"
+        <input type="number" class="form-control" th:field="*{precio}"
                th:classappend="${#fields.hasErrors('precio')} ? 'is-invalid' : ''">
         <div class="invalid-feedback" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Stock</label>
-        <input type="text" class="form-control" th:field="*{stock}"
+        <input type="number" class="form-control" th:field="*{stock}"
                th:classappend="${#fields.hasErrors('stock')} ? 'is-invalid' : ''">
         <div class="invalid-feedback" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
     </div>
