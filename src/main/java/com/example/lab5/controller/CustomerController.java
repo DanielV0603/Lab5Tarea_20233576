@@ -1,7 +1,9 @@
 package com.example.lab5.controller;
 
 import com.example.lab5.entity.Customer;
+import com.example.lab5.entity.Product;
 import com.example.lab5.repository.CustomerRepository;
+import com.example.lab5.repository.ProductoRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +19,11 @@ import java.util.Optional;
 @Controller
 public class CustomerController {
     private final CustomerRepository customerRepository;
+    private final ProductoRepository productoRepository;
 
-    public CustomerController(CustomerRepository customerRepository){
+    public CustomerController(CustomerRepository customerRepository, ProductoRepository productoRepository){
         this.customerRepository=customerRepository;
+        this.productoRepository=productoRepository;
     }
     @GetMapping({"","/"})
     public String listarCustomers(Model model){
@@ -83,4 +87,28 @@ public class CustomerController {
         attr.addFlashAttribute("msg", "usuario borrado exitosamente");
         return "redirect:/";
     }
+    @GetMapping({"/productos"})
+    public String listarProductos(Model model){
+        model.addAttribute("listaProductos",productoRepository.findAll());
+        return "listaProductos";
+    }
+    @GetMapping("/crearProducto")
+    public String registrarProducto(@ModelAttribute("producto") Product producto) {
+        return "crearProducto";
+    }
+    @PostMapping("/guardarProducto")
+    public String guardarProducto(@ModelAttribute("producto") @Valid Product producto, BindingResult bindingResult, RedirectAttributes attr) {
+
+        if (bindingResult.hasErrors()) {
+            return "crearProducto";
+        }
+        if (producto.getId() == null) {
+            attr.addFlashAttribute("msg", "Usuario creado exitosamente");
+        } else {
+            attr.addFlashAttribute("msg", "Usuario actualizado exitosamente");
+        }
+        productoRepository.save(producto);
+        return "redirect:/";
+    }
+
 }
