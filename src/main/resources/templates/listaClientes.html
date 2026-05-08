@@ -12,11 +12,15 @@
         <a th:href="@{/crearCliente}" class="btn btn-primary">Registrar Nuevo cliente</a>
     </div>
     <table class="table table-striped table-bordered">
+        <thead>
         <tr>
             <th>Nombre</th>
             <th>Documento</th>
             <th>Tipo de documento</th>
+            <th></th>
+            <th></th>
         </tr>
+        </thead>
         <tbody>
         <tr th:each="cliente : ${listaClientes}">
             <td th:text="${cliente.nombre}"></td>

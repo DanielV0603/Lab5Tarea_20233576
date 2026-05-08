@@ -12,11 +12,15 @@
     <a th:href="@{/crearProducto}" class="btn btn-primary">Registrar Nuevo producto</a>
 </div>
 <table class="table table-striped table-bordered">
+    <thead>
     <tr>
         <th>Nombre</th>
         <th>Precio</th>
         <th>Stock</th>
+        <th></th>
+        <th></th>
     </tr>
+    </thead>
     <tbody>
     <tr th:each="producto : ${listaProductos}">
         <td th:text="${producto.nombre}"></td>

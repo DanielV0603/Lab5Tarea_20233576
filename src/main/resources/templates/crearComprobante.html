@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/navbar.html :: header(title = 'Nuevo Comprobante')}"></head>
+<body class="container mt-4">
+<div th:replace="~{fragments/navbar.html :: navbar('comprobantes')}"></div>
+
+<h2 class="mb-4">Nuevo comprobante</h2>
+
+<form th:action="@{/comprobantes/guardar}" th:object="${invoice}" method="post" class="shadow-sm p-4 border rounded bg-light">
+
+    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <ul class="mb-0">
+            <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Tipo</label>
+            <select class="form-select" th:field="*{type}" th:classappend="${#fields.hasErrors('type')} ? 'is-invalid' : ''">
+                <option value="">Seleccione el tipo...</option>
+                <option value="Boleta">Boleta</option>
+                <option value="Factura">Factura</option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Fecha</label>
+            <input type="date" class="form-control" th:field="*{date}"
+                   th:classappend="${#fields.hasErrors('date')} ? 'is-invalid' : ''">
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label fw-bold">Cliente</label>
+            <select class="form-select" th:field="*{customer}"
+                    th:classappend="${#fields.hasErrors('customer')} ? 'is-invalid' : ''">
+                <option value="">Seleccione un cliente...</option>
+                <option th:each="c : ${listaClientes}"
+                        th:value="${c.id}"
+                        th:text="${c.nombre + ' - ' + c.documentoTipo + ': ' + c.documento}"></option>
+            </select>
+            <div class="invalid-feedback" th:if="${#fields.hasErrors('customer')}" th:errors="*{customer}"></div>
+        </div>
+    </div>
+
+    <h4 class="mt-4 mb-3 border-bottom pb-2">Productos y cantidades</h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio (S/)</th>
+                <th>Stock Actual</th>
+                <th>Cantidad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${listaProductos}">
+                <td th:text="${p.nombre}"></td>
+                <td th:text="${#numbers.formatDecimal(p.precio, 1, 2)}"></td>
+                <td th:text="${p.stock}" class="text-center"></td>
+                <td>
+                    <input type="hidden" name="productIds" th:value="${p.id}">
+                    <input type="number" name="cantidades" value="0" min="0" class="form-control">
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(listaProductos)}">
+                <td colspan="4" class="text-center text-muted">No hay productos disponibles en el inventario.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-success px-4">
+            <i class="bi bi-file-earmark-check-fill me-1"></i> Emitir comprobante
+        </button>
+        <a th:href="@{/comprobantes/lista}" class="btn btn-secondary px-4">Cancelar</a>
+    </div>
+</form>
+</body>
+</html>
