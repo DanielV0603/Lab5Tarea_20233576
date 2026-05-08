@@ -57,9 +57,9 @@ public class CustomerController {
             return "crearClientes";
         }
         if (cliente.getId() == null) {
-            attr.addFlashAttribute("msg", "Usuario creado exitosamente");
+            attr.addFlashAttribute("msg", "cliente creado exitosamente");
         } else {
-            attr.addFlashAttribute("msg", "Usuario actualizado exitosamente");
+            attr.addFlashAttribute("msg", "cliente actualizado exitosamente");
         }
         customerRepository.save(cliente);
         return "redirect:/";
@@ -84,7 +84,7 @@ public class CustomerController {
         if (optional.isPresent()) {
             customerRepository.deleteById(id);
         }
-        attr.addFlashAttribute("msg", "usuario borrado exitosamente");
+        attr.addFlashAttribute("msg", "cliente borrado exitosamente");
         return "redirect:/";
     }
     @GetMapping({"/productos"})
@@ -103,12 +103,21 @@ public class CustomerController {
             return "crearProducto";
         }
         if (producto.getId() == null) {
-            attr.addFlashAttribute("msg", "Usuario creado exitosamente");
+            attr.addFlashAttribute("msg", "producto creado exitosamente");
         } else {
-            attr.addFlashAttribute("msg", "Usuario actualizado exitosamente");
+            attr.addFlashAttribute("msg", "producto actualizado exitosamente");
         }
         productoRepository.save(producto);
         return "redirect:/";
     }
+    @GetMapping("/eliminarProducto")
+    public String borrarProducto(@RequestParam("id") int id, RedirectAttributes attr) {
+        Optional<Customer> optional = customerRepository.findById(id);
 
+        if (optional.isPresent()) {
+            productoRepository.deleteById(id);
+        }
+        attr.addFlashAttribute("msg", "producto borrado exitosamente");
+        return "redirect:/";
+    }
 }
