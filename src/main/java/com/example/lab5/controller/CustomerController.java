@@ -32,20 +32,32 @@ public class CustomerController {
     }
     @PostMapping("/guardarCliente")
     public String guardarUsuario(@ModelAttribute("cliente") @Valid Customer cliente, BindingResult bindingResult, RedirectAttributes attr) {
-        if(cliente.getDocumento() != null){
-            try {
-                Integer documento= Integer.parseInt(cliente.getDocumento());
-            } catch (NumberFormatException e) {
-                bindingResult.rejectValue("documento","error.documento","El documento debe tener solo números");
+
+        if (!bindingResult.hasFieldErrors("documento") && !bindingResult.hasFieldErrors("documentoTipo")) {
+
+            String tipo = cliente.getDocumentoTipo();
+            String doc = cliente.getDocumento();
+
+            //Validaciones Regex
+            if (tipo.equalsIgnoreCase("DNI")) {
+                if (!doc.matches("\\d{8}")) {
+                    bindingResult.rejectValue("documento", "error.documento", "El DNI debe tener exactamente 8 dígitos numéricos");
+                }
+            } else if (tipo.equalsIgnoreCase("RUC")) {
+                if (!doc.matches("\\d{11}")) {
+                    bindingResult.rejectValue("documento", "error.documento", "El RUC debe tener exactamente 11 dígitos numéricos");
+                }
+            } else {
+                bindingResult.rejectValue("documentoTipo", "error.documentoTipo", "El tipo de documento debe ser DNI o RUC");
             }
-        }
-        if(cliente.getDocumentoTipo().toLowerCase()=="dni"){
-            if(cliente.getDocumento().length()!=8){
-                bindingResult.rejectValue("documento","error.documento","El documento debe ser de 8 digitos");
-            }
-        } else if (cliente.getDocumentoTipo().toLowerCase()=="ruc") {
-            if(cliente.getDocumento().length()!=11){
-                bindingResult.rejectValue("documento","error.documento","El documento debe ser de 11 digitos");
+
+            //Documento Único
+            if (!bindingResult.hasFieldErrors("documento")) {
+                Optional<Customer> clienteExistente = customerRepository.findByDocumento(doc);
+
+                if (clienteExistente.isPresent() && !clienteExistente.get().getId().equals(cliente.getId())) {
+                    bindingResult.rejectValue("documento", "error.documento", "Este documento ya se encuentra registrado");
+                }
             }
         }
 
