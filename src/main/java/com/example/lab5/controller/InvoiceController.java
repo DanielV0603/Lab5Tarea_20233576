@@ -75,7 +75,7 @@ public class InvoiceController {
                 if (cant != null && cant > 0) {
                     tieneProductos = true;
 
-                    // 3. Validar Stock disponible (Regla 102)
+                    //Stock disponible
                     Optional<Product> proOpt = productoRepository.findById(productIds.get(i));
                     Product p=proOpt.get();
                     if (cant > p.getStock()) {
