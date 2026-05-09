@@ -95,9 +95,9 @@ public class InvoiceController {
             return "crearComprobante";
         }
 
-        // 4. Proceso de Guardado y Cálculos (Regla 105)
-        invoiceRepository.save(invoice); // Guardamos la cabecera primero
+        invoiceRepository.save(invoice);
 
+        //Guardar invoicedetail
         for (int i = 0; i < productIds.size(); i++) {
             Integer cant = cantidades.get(i);
             if (cant != null && cant > 0) {
